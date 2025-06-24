@@ -78,7 +78,7 @@ class CountdownTimerSpec extends AnyFunSuiteLike {
     val fakeClock = new FakeClock(1000L)
     val countdownTimer = CountdownTimer(5000L, BasicTimer()(using fakeClock))(using fakeClock).start()
     fakeClock.advanceTimeBy(2000L)
-    assert(countdownTimer.elapsedMs == 2000L)
+    assert(countdownTimer.elapsedMilliseconds() == 2000L)
   }
 
   test("currentState returns Finished when timer is finished") {

@@ -1,46 +1,44 @@
 package com.timerbackendscala.core
 
-class TimerEngine()(using clock: Clock) {
+class TimerEngine(val timer: Timer) {
 
-  private var timer: BasicTimer = BasicTimer()(using clock)
+  def startTimer(): TimerEngine =
+    TimerEngine(timer.start())
 
-  def startTimer(): Unit = {
-    timer = timer.start()
-  }
+  def pauseTimer(): TimerEngine =
+    TimerEngine(timer.pause())
 
-  def pauseTimer(): Unit = {
-    timer = timer.pause()
-  }
+  def resumeTimer(): TimerEngine =
+    TimerEngine(timer.resume())
 
-  def resumeTimer(): Unit = {
-    timer = timer.resume()
-  }
+  def stopTimer(): TimerEngine =
+    TimerEngine(timer.stop())
 
-  def stopTimer(): Unit = {
-    timer = timer.stop()
-  }
+  def resetTimer(): TimerEngine =
+    TimerEngine(timer.reset())
 
-  def resetTimer(): Unit = {
-    timer = timer.reset()
-  }
-
-  def elapsedMilliseconds(): Long = {
+  def elapsedMilliseconds(): Long =
     timer.elapsedMilliseconds()
-  }
 
-  def isRunning: Boolean = {
+  def isRunning: Boolean =
     timer.isRunning
-  }
 
-  def isPaused: Boolean = {
+  def isPaused: Boolean =
     timer.isPaused
-  }
 
-  def currentState: TimerState = {
+  def currentState: TimerState =
     timer.state
-  }
 
-  def getTimer: BasicTimer = {
-    timer
-  }
+  def getTimer: Timer = timer
+}
+
+object TimerEngine {
+  def apply()(using clock: Clock): TimerEngine =
+    new TimerEngine(BasicTimer())
+
+  def apply(timer: Timer): TimerEngine =
+    new TimerEngine(timer)  
+
+  def countdown(durationMs: Long)(using clock: Clock): TimerEngine =
+    new TimerEngine(new CountdownTimer(durationMs, BasicTimer()))
 }

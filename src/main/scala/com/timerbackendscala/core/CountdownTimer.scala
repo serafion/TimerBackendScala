@@ -1,42 +1,58 @@
 package com.timerbackendscala.core
 
-case class CountdownTimer(
-                           durationMs: Long,
-                           timer: BasicTimer
-                         )(using clock: Clock) extends BasicTimer(timer.state) {
+class CountdownTimer(
+                      val durationMs: Long,
+                      val timer: BasicTimer
+                    )(using clock: Clock) extends Timer {
 
-  override def start(): CountdownTimer =
+  def start(): CountdownTimer =
     if timer.state == NotStarted then
       copy(timer = timer.start())
     else this
 
-  override def pause(): CountdownTimer =
+  def pause(): CountdownTimer =
     copy(timer = timer.pause())
 
-  override def resume(): CountdownTimer =
+  def resume(): CountdownTimer =
     copy(timer = timer.resume())
 
-  override def stop(): CountdownTimer =
+  def stop(): CountdownTimer =
     copy(timer = timer.stop())
 
-  override def reset(): CountdownTimer =
+  def reset(): CountdownTimer =
     copy(timer = timer.reset())
+
+  def isRunning: Boolean = timer.isRunning
+
+  def isPaused: Boolean = timer.isPaused
+
+  def remainingMs: Long =
+    math.max(0, durationMs - elapsedMilliseconds())
 
   def isFinished: Boolean =
     remainingMs <= 0 && timer.isRunning
-
-  override def isRunning: Boolean = timer.isRunning
-
-  override def isPaused: Boolean = timer.isPaused
-
-  def elapsedMs: Long = timer.elapsedMilliseconds()
-
-  def remainingMs: Long =
-    math.max(0, durationMs - elapsedMs)
 
   def currentState: String =
     if isFinished then "Finished"
     else if isPaused then "Paused"
     else if isRunning then "Running"
     else "NotStarted"
+
+  override def elapsedMilliseconds(): Long = timer.elapsedMilliseconds()
+
+  override def state: TimerState = timer.state
+
+  // ręcznie napisana metoda copy dla niemutowalności
+  def copy(
+            durationMs: Long = this.durationMs,
+            timer: BasicTimer = this.timer
+          ): CountdownTimer =
+    new CountdownTimer(durationMs, timer)
 }
+
+object CountdownTimer:
+  def apply(durationMs: Long)(using clock: Clock): CountdownTimer =
+    new CountdownTimer(durationMs, BasicTimer()(using clock))
+// write apply method with all params
+  def apply(durationMs: Long, timer: BasicTimer)(using clock: Clock): CountdownTimer =
+    new CountdownTimer(durationMs, timer)
