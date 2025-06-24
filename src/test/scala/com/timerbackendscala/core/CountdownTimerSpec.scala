@@ -15,7 +15,7 @@ class CountdownTimerSpec extends AnyFunSuiteLike {
 
   test("start transitions CountdownTimer to Running state") {
     val fakeClock = new FakeClock(1000L)
-    val countdownTimer = CountdownTimer(5000L, Timer()(using fakeClock))(using fakeClock)
+    val countdownTimer = CountdownTimer(5000L, BasicTimer()(using fakeClock))(using fakeClock)
     val startedTimer = countdownTimer.start()
     assert(startedTimer.isRunning)
     assert(startedTimer.currentState == "Running")
@@ -23,7 +23,7 @@ class CountdownTimerSpec extends AnyFunSuiteLike {
 
   test("pause transitions CountdownTimer to Paused state") {
     val fakeClock = new FakeClock(1000L)
-    val countdownTimer = CountdownTimer(5000L, Timer()(using fakeClock))(using fakeClock).start()
+    val countdownTimer = CountdownTimer(5000L, BasicTimer()(using fakeClock))(using fakeClock).start()
     fakeClock.advanceTimeBy(1000L)
     val pausedTimer = countdownTimer.pause()
     assert(pausedTimer.isPaused)
@@ -32,7 +32,7 @@ class CountdownTimerSpec extends AnyFunSuiteLike {
 
   test("resume transitions CountdownTimer to Running state from Paused") {
     val fakeClock = new FakeClock(1000L)
-    val countdownTimer = CountdownTimer(5000L, Timer()(using fakeClock))(using fakeClock).start()
+    val countdownTimer = CountdownTimer(5000L, BasicTimer()(using fakeClock))(using fakeClock).start()
     fakeClock.advanceTimeBy(1000L)
     val pausedTimer = countdownTimer.pause()
     fakeClock.advanceTimeBy(1000L)
@@ -43,7 +43,7 @@ class CountdownTimerSpec extends AnyFunSuiteLike {
 
   test("stop transitions CountdownTimer to Stopped state") {
     val fakeClock = new FakeClock(1000L)
-    val countdownTimer = CountdownTimer(5000L, Timer()(using fakeClock))(using fakeClock).start()
+    val countdownTimer = CountdownTimer(5000L, BasicTimer()(using fakeClock))(using fakeClock).start()
     fakeClock.advanceTimeBy(1000L)
     val stoppedTimer = countdownTimer.stop()
     assert(!stoppedTimer.isRunning)
@@ -52,7 +52,7 @@ class CountdownTimerSpec extends AnyFunSuiteLike {
 
   test("reset transitions CountdownTimer to NotStarted state") {
     val fakeClock = new FakeClock(1000L)
-    val countdownTimer = CountdownTimer(5000L, Timer()(using fakeClock))(using fakeClock).start()
+    val countdownTimer = CountdownTimer(5000L, BasicTimer()(using fakeClock))(using fakeClock).start()
     val resetTimer = countdownTimer.reset()
     assert(!resetTimer.isRunning)
     assert(resetTimer.currentState == "NotStarted")
@@ -60,7 +60,7 @@ class CountdownTimerSpec extends AnyFunSuiteLike {
 
   test("isFinished returns true when remainingMs is 0 and timer is running") {
     val fakeClock = new FakeClock(1000L)
-    val countdownTimer = CountdownTimer(2000L, Timer()(using fakeClock))(using fakeClock).start()
+    val countdownTimer = CountdownTimer(2000L, BasicTimer()(using fakeClock))(using fakeClock).start()
     fakeClock.advanceTimeBy(2000L)
     assert(countdownTimer.isFinished)
     assert(countdownTimer.currentState == "Finished")
@@ -69,28 +69,28 @@ class CountdownTimerSpec extends AnyFunSuiteLike {
 
   test("remainingMs returns correct remaining time") {
     val fakeClock = new FakeClock(1000L)
-    val countdownTimer = CountdownTimer(5000L, Timer()(using fakeClock))(using fakeClock).start()
+    val countdownTimer = CountdownTimer(5000L, BasicTimer()(using fakeClock))(using fakeClock).start()
     fakeClock.advanceTimeBy(2000L)
     assert(countdownTimer.remainingMs == 3000L)
   }
 
   test("elapsedMs returns correct elapsed time") {
     val fakeClock = new FakeClock(1000L)
-    val countdownTimer = CountdownTimer(5000L, Timer()(using fakeClock))(using fakeClock).start()
+    val countdownTimer = CountdownTimer(5000L, BasicTimer()(using fakeClock))(using fakeClock).start()
     fakeClock.advanceTimeBy(2000L)
     assert(countdownTimer.elapsedMs == 2000L)
   }
 
   test("currentState returns Finished when timer is finished") {
     val fakeClock = new FakeClock(1000L)
-    val countdownTimer = CountdownTimer(2000L, Timer()(using fakeClock))(using fakeClock).start()
+    val countdownTimer = CountdownTimer(2000L, BasicTimer()(using fakeClock))(using fakeClock).start()
     fakeClock.advanceTimeBy(2000L)
     assert(countdownTimer.currentState == "Finished")
   }
 
   test("currentState returns NotStarted when timer is not started") {
     val fakeClock = new FakeClock(1000L)
-    val countdownTimer = CountdownTimer(5000L, Timer()(using fakeClock))(using fakeClock)
+    val countdownTimer = CountdownTimer(5000L, BasicTimer()(using fakeClock))(using fakeClock)
     assert(countdownTimer.currentState == "NotStarted")
   }
 }

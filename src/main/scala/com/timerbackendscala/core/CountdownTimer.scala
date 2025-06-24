@@ -2,32 +2,32 @@ package com.timerbackendscala.core
 
 case class CountdownTimer(
                            durationMs: Long,
-                           timer: Timer
-                         )(using clock: Clock) {
+                           timer: BasicTimer
+                         )(using clock: Clock) extends BasicTimer(timer.state) {
 
-  def start(): CountdownTimer =
+  override def start(): CountdownTimer =
     if timer.state == NotStarted then
       copy(timer = timer.start())
     else this
 
-  def pause(): CountdownTimer =
+  override def pause(): CountdownTimer =
     copy(timer = timer.pause())
 
-  def resume(): CountdownTimer =
+  override def resume(): CountdownTimer =
     copy(timer = timer.resume())
 
-  def stop(): CountdownTimer =
+  override def stop(): CountdownTimer =
     copy(timer = timer.stop())
 
-  def reset(): CountdownTimer =
+  override def reset(): CountdownTimer =
     copy(timer = timer.reset())
 
   def isFinished: Boolean =
     remainingMs <= 0 && timer.isRunning
 
-  def isRunning: Boolean = timer.isRunning
+  override def isRunning: Boolean = timer.isRunning
 
-  def isPaused: Boolean = timer.isPaused
+  override def isPaused: Boolean = timer.isPaused
 
   def elapsedMs: Long = timer.elapsedMilliseconds()
 

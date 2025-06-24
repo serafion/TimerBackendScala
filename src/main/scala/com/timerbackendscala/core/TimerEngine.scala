@@ -2,7 +2,7 @@ package com.timerbackendscala.core
 
 class TimerEngine()(using clock: Clock) {
 
-  private var timer: Timer = Timer()(using clock)
+  private var timer: BasicTimer = BasicTimer()(using clock)
 
   def startTimer(): Unit = {
     timer = timer.start()
@@ -40,7 +40,7 @@ class TimerEngine()(using clock: Clock) {
     timer.state
   }
 
-  def getTimer: Timer = {
+  def getTimer: BasicTimer = {
     timer
   }
 }

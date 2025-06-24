@@ -1,6 +1,8 @@
 package com.timerbackendscala.cli
 
 import com.timerbackendscala.core.{SystemClock, TimerEngine}
+import scala.language.postfixOps
+import scala.language.experimental.macros
 
 object TimerConsoleApp:
 
@@ -11,12 +13,10 @@ object TimerConsoleApp:
     f"$minutes%02d:$seconds%02d.$millis%03d"
 
   def main(args: Array[String]): Unit =
-    println("🕒 Timer CLI - komendy: start, pause, resume, stop, reset, elapsed, set <sec>, exit")
-
+    println("🕒 Timer CLI - commands: start, pause, resume, stop, reset, elapsed, set <sec>, exit")
     val timerEngine = TimerEngine()(using SystemClock)
     var running = true
     var durationLimitMs: Option[Long] = None
-
     while running do
       print("> ")
       val input = scala.io.StdIn.readLine().trim.toLowerCase
