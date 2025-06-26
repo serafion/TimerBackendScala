@@ -34,12 +34,6 @@ class CountdownTimer(
   def isFinished: Boolean =
     remainingMs <= 0 && timer.isRunning
 
-  def currentState: String =
-    if isFinished then "Finished"
-    else if isPaused then "Paused"
-    else if isRunning then "Running"
-    else "NotStarted"
-
   override def elapsedMilliseconds(): Long = timer.elapsedMilliseconds()
 
   override def state: TimerState = timer.state

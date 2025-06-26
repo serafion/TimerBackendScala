@@ -16,12 +16,14 @@ object TimerConsoleApp:
 
   def main(args: Array[String]): Unit =
     println("Welcome to the Timer Console App!")
-    println("Available commands: start, pause, resume, stop, reset, elapsed, list, exit")
+    println("Available commands: create, start, pause, resume, stop, reset, elapsed, list, exit")
 
     loop(TimerFacade())
 
   @tailrec
   def loop(facade: TimerFacade): Unit =
+
+    val updatedFacade = facade.tickAll()
     given Clock = SystemClock
     print("Enter command: ")
     val input = StdIn.readLine().trim.toLowerCase
@@ -29,28 +31,28 @@ object TimerConsoleApp:
     input match
       case "create" =>
         val kind = promptTimerKind()
-        val (updatedFacade, timerId) = facade.createTimer(kind, "My Timer")
+        val (facade, timerId) = updatedFacade.createTimer(kind, "My Timer")
         println(s"Timer created with ID: $timerId")
-        loop(updatedFacade)
+        loop(facade)
 
       case "start" |"pause" | "resume" | "stop" | "reset" | "elapsed" =>
         val timerId = TimerId(UUID.fromString(StdIn.readLine("Enter timer ID: ").trim))
         val command = fromString(input, timerId)
         command match
           case Some(cmd) =>
-            val (updatedFacade, event) = facade.handleCommand(timerId, cmd)
+            val (facade, event) = updatedFacade.handleCommand(timerId, cmd)
             println(s"Command executed: $event")
-            loop(updatedFacade)
+            loop(facade)
           case None =>
             println("Invalid command.")
-            loop(facade)
+            loop(updatedFacade)
 
       case "list" =>
         println("Listing all timers:")
         facade.timers.foreach { case (id, engine) =>
           println(s"ID: $id, State: ${engine.currentState}")
         }
-        loop(facade)
+        loop(updatedFacade)
 
       case "exit" =>
         println("Thank you for using the Timer Console App!")

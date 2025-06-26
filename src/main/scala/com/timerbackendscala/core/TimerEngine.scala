@@ -33,9 +33,16 @@ class TimerEngine(val timer: Timer) {
     timer.state
 
   def getTimer: Timer = timer
-  
-  //write a function that checks timer state and return a timerEvent related to state
 
+  def tick(): TimerEngine =
+    timer match {
+      case ct: CountdownTimer if ct.isRunning =>
+        if (ct.isFinished)
+          TimerEngine(ct.stop())
+        else
+          this 
+      case _ => this
+    }
 }
 
 object TimerEngine {

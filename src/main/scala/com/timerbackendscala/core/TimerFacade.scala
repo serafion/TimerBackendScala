@@ -31,6 +31,13 @@ final case class TimerFacade(timers: Map[TimerId, TimerEngine] = Map.empty) {
     (newFacade, event)
   }
 
+  def tickAll(): TimerFacade = {
+    val updatedTimers = timers.map { case (id, engine) =>
+      id -> engine.tick()
+    }
+    copy(timers = updatedTimers)
+  }
+
   private def timerEvent(id: TimerId, timer: TimerEngine): TimerEvent = {
     timer.timer.state match {
       case NotStarted                => TimerEvent.Stopped(id)
