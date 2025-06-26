@@ -3,12 +3,6 @@ package com.timerbackendscala.core
 import org.scalatest.funsuite.AnyFunSuiteLike
 
 class TimerEngineSpec extends AnyFunSuiteLike {
-  class FakeClock(var currentTime: Long) extends Clock {
-    override def currentTimeMillis(): Long = currentTime
-    def advanceTimeBy(milliseconds: Long): Unit = {
-      currentTime += milliseconds
-    }
-  }
 
   test("startTimer transitions TimerEngine to Running state") {
     val fakeClock = new FakeClock(1000L)
@@ -94,5 +88,38 @@ class TimerEngineSpec extends AnyFunSuiteLike {
     val fakeClock = new FakeClock(1000L)
     val engine = TimerEngine()(using fakeClock)
     assert(!engine.isPaused)
+  }
+
+  test("tick updates CountdownTimer state to stopped when time is up") {
+    val fakeClock = new FakeClock(1000L)
+    val countdownEngine = TimerEngine.countdown(5000L)(using fakeClock)
+    val countdownEngineStarted =  countdownEngine.startTimer()
+    fakeClock.advanceTimeBy(5000L)
+    val result = countdownEngineStarted.tick()
+    assert(result.currentState == Stopped(1000L, 6000L))
+    assert(result.elapsedMilliseconds() == 5000L)
+  }
+
+  // Additional tests can be added here to cover more scenarios
+  test("tick does not change state if CountdownTimer is not running") {
+    val fakeClock = new FakeClock(1000L)
+    val countdownEngine = TimerEngine.countdown(5000L)(using fakeClock)
+    val result = countdownEngine.tick()
+    assert(result.currentState == NotStarted)
+  }
+  test("tick does not change state if CountdownTimer is running but not finished") {
+    val fakeClock = new FakeClock(1000L)
+    val countdownEngine = TimerEngine.countdown(5000L)(using fakeClock)
+    val countdownEngineStarted = countdownEngine.startTimer()
+    fakeClock.advanceTimeBy(2000L)
+    val result = countdownEngineStarted.tick()
+    assert(result.currentState == Running(1000L))
+    assert(result.elapsedMilliseconds() == 2000L)
+  }
+  test("tick does not change state if TimerEngine is not a CountdownTimer") {
+    val fakeClock = new FakeClock(1000L)
+    val basicEngine = TimerEngine()(using fakeClock)
+    val result = basicEngine.tick()
+    assert(result.currentState == NotStarted)
   }
 }
