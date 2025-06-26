@@ -1,10 +1,12 @@
-package com.timerbackendscala.core
+package com.timerbackendscala.core.timers
 
+import com.timerbackendscala.core.timers.BasicTimer
+import com.timerbackendscala.core.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 
-class TimerSpec extends AnyFlatSpec with Matchers {
+class BasicTimerSpec extends AnyFlatSpec with Matchers {
   implicit val clock: Clock = SystemClock
 
   "A Timer" should "start in NotStarted state" in {

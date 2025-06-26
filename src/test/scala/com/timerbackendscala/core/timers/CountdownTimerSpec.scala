@@ -1,5 +1,7 @@
-package com.timerbackendscala.core
+package com.timerbackendscala.core.timers
 
+import com.timerbackendscala.core.Clock
+import com.timerbackendscala.core.timers.{BasicTimer, CountdownTimer}
 import org.scalatest.funsuite.AnyFunSuiteLike
 
 class CountdownTimerSpec extends AnyFunSuiteLike {

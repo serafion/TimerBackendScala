@@ -1,5 +1,8 @@
 package com.timerbackendscala.core
 
+import com.timerbackendscala.core.timers.{BasicTimer, CountdownTimer}
+import com.timerbackendscala.domain.TimerEvent
+
 class TimerEngine(val timer: Timer) {
 
   def startTimer(): TimerEngine =
@@ -30,6 +33,9 @@ class TimerEngine(val timer: Timer) {
     timer.state
 
   def getTimer: Timer = timer
+  
+  //write a function that checks timer state and return a timerEvent related to state
+
 }
 
 object TimerEngine {
