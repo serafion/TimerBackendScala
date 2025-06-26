@@ -1,4 +1,6 @@
-package com.timerbackendscala.core
+package com.timerbackendscala.core.timers
+
+import com.timerbackendscala.core.*
 
 class BasicTimer(
                   private val timerState: TimerState = NotStarted

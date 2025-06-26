@@ -1,4 +1,6 @@
-package com.timerbackendscala.core
+package com.timerbackendscala.core.timers
+
+import com.timerbackendscala.core.{Clock, NotStarted, Timer, TimerState}
 
 class CountdownTimer(
                       val durationMs: Long,
@@ -42,7 +44,6 @@ class CountdownTimer(
 
   override def state: TimerState = timer.state
 
-  // ręcznie napisana metoda copy dla niemutowalności
   def copy(
             durationMs: Long = this.durationMs,
             timer: BasicTimer = this.timer
@@ -53,6 +54,5 @@ class CountdownTimer(
 object CountdownTimer:
   def apply(durationMs: Long)(using clock: Clock): CountdownTimer =
     new CountdownTimer(durationMs, BasicTimer()(using clock))
-// write apply method with all params
   def apply(durationMs: Long, timer: BasicTimer)(using clock: Clock): CountdownTimer =
     new CountdownTimer(durationMs, timer)
